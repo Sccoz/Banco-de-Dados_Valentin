@@ -5,9 +5,33 @@
  # Questões Básicas — Subquery como filtro
 
 -- 1. Liste os alunos que possuem a maior idade cadastrada.
+SELECT nome FROM `Alunos`
+WHERE idade = (
+    SELECT MAX(idade)
+    FROM `Alunos`
+);
+
+
 -- 2. Exiba os alunos que possuem idade menor que a média das idades.
+
+SELECT nome FROM `Alunos`
+WHERE idade < (
+    SELECT AVG(idade) 
+    FROM `Alunos`
+);
+
+
 -- 3. Mostre os cursos que possuem a maior carga horária.
+SELECT  nome_curso FROM `Cursos`
+WHERE carga_horaria = (
+    SELECT MAX(carga_horaria)
+    FROM `Cursos`
+);
+
 -- 4. Liste os alunos que possuem nota igual à maior nota registrada nas matrículas.
+
+
+
 -- 5. Exiba os alunos que possuem nota menor que a média geral das notas.
 -- 6. Mostre os cursos cuja carga horária seja maior que a média das cargas horárias.
 -- 7. Liste os alunos que possuem exatamente a menor idade cadastrada.
