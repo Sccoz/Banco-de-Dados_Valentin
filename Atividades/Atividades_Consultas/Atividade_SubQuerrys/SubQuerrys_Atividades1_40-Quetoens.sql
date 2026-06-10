@@ -1,6 +1,6 @@
 
 --INICIO DAS ATIVIDADES :
-
+USE EscolaDB;
 
  # Questões Básicas — Subquery como filtro
 
@@ -29,22 +29,83 @@ WHERE carga_horaria = (
 );
 
 -- 4. Liste os alunos que possuem nota igual à maior nota registrada nas matrículas.
-
-
+SELECT Alunos.nome as Aluno,  Matriculas.nota as Notas
+FROM `Alunos`
+JOIN `Matriculas` ON Matriculas.id_aluno = Alunos.id_aluno
+WHERE Matriculas.nota = (
+    SELECT MAX(nota)
+    FROM `Matriculas`
+);
 
 -- 5. Exiba os alunos que possuem nota menor que a média geral das notas.
--- 6. Mostre os cursos cuja carga horária seja maior que a média das cargas horárias.
--- 7. Liste os alunos que possuem exatamente a menor idade cadastrada.
--- 8. Exiba as matrículas cuja quantidade de faltas seja maior que a média de faltas.
--- 9. Mostre os cursos que possuem carga horária diferente da maior carga horária.
--- 10. Liste os alunos que possuem nota igual à menor nota registrada.
+SELECT Alunos.nome as Alunos , Matriculas.nota as Notas 
+FROM `Alunos`
+JOIN `Matriculas` ON Matriculas.id_aluno = Alunos.id_aluno
+WHERE Matriculas.nota < (
+    SELECT AVG(nota)
+    FROM `Matriculas`
+);
 
--- ---
+-- 6. Mostre os cursos cuja carga horária seja maior que a média das cargas horárias.
+SELECT nome_curso as Cursos , Cursos.carga_horaria as Horas 
+FROM `Cursos`
+WHERE carga_horaria > (
+    SELECT AVG(carga_horaria)
+    FROM `Cursos`
+);
+
+-- 7. Liste os alunos que possuem exatamente a menor idade cadastrada.
+SELECT nome FROM `Alunos`
+WHERE idade = (
+    SELECT MIN(idade)
+    FROM `Alunos`
+);
+
+-- 8. Exiba as matrículas cuja quantidade de faltas seja maior que a média de faltas.
+SELECT * FROM `Matriculas`
+WHERE faltas > (
+    SELECT AVG(faltas)
+    FROM `Matriculas`
+);
+
+-- 9. Mostre os cursos que possuem carga horária diferente da maior carga horária.
+SELECT nome_curso FROM `Cursos`
+WHERE carga_horaria <> (
+    SELECT MAX(carga_horaria)
+    FROM `Cursos`
+);
+
+-- 10. Liste os alunos que possuem nota igual à menor nota registrada.
+SELECT Alunos.nome AS Aluno, Matriculas.nota AS Nota
+FROM `Alunos`
+JOIN `Matriculas` ON Matriculas.id_aluno = Alunos.id_aluno
+WHERE Matriculas.nota = (
+    SELECT MIN(nota)
+    FROM `Matriculas`
+);
+
+
+
+
 
 -- # Questões Intermediárias — Subquery com IN
 
 -- 1. Liste os nomes dos alunos que possuem matrícula cadastrada.
+SELECT Alunos.nome AS Nome
+FROM `Alunos`
+JOIN `Matriculas` ON Matriculas.id_aluno = Alunos.id_aluno
+WHERE Matriculas.id_matricula IS NOT NULL;
+
+
 -- 2. Exiba os cursos que possuem alunos matriculados.
+SELECT Cursos.nome_curso
+FROM `Cursos` 
+WHERE id_curso IN (
+    SELECT id_curso
+    FROM `Matriculas`
+);
+
+
 -- 3. Mostre os alunos que estão matriculados no curso “Python”.
 -- 4. Liste os alunos matriculados em cursos com carga horária maior que 60 horas.
 -- 5. Exiba os cursos nos quais existem alunos com nota maior que 8.
@@ -52,11 +113,29 @@ WHERE carga_horaria = (
 -- 7. Liste os cursos que NÃO possuem matrículas cadastradas.
 -- 8. Exiba os alunos que possuem faltas maiores que 5 em alguma matrícula.
 -- 9. Mostre os cursos frequentados por alunos da cidade de Curitiba.
+SELECT Cursos.nome_curso as Cursos
+FROM `Cursos`
+WHERE id_curso IN (
+    SELECT Matriculas.id_curso
+    FROM `Matriculas`
+    JOIN `Alunos` ON Alunos.id_aluno = Matriculas.id_aluno
+    WHERE Alunos.cidade = 'Curitiba'
+)
+
+
 -- 10. Liste os alunos matriculados no curso com maior carga horária.
 
 -- # Questões Avançadas — Subquery com operadores de comparação
 
 -- 1. Exiba os alunos cuja idade seja maior que a média de idade dos alunos de São Paulo.
+SELECT Alunos.nome as Alunos, Alunos.idade as Idade 
+FROM `Alunos` 
+WHERE idade > (
+    SELECT AVG(idade)
+    FROM `Alunos`
+    WHERE cidade = 'São Paulo'
+);
+
 -- 2. Liste os cursos cuja média de notas seja maior que a média geral das notas.
 -- 3. Mostre os alunos cuja soma de faltas seja maior que a média total de faltas.
 -- 4. Exiba os cursos cuja maior nota registrada seja igual à maior nota do sistema.
@@ -65,6 +144,9 @@ WHERE carga_horaria = (
 -- 7. Exiba os alunos que possuem nota maior que todas as notas do curso “Banco de Dados”.
 -- 8. Liste os cursos cuja menor nota seja maior que a média geral das menores notas dos cursos.
 -- 9. Mostre os alunos cuja idade seja igual à idade média dos alunos.
+
+
+
 -- 10. Exiba os cursos cuja carga horária seja menor que a maior carga horária cadastrada.
 
 -- ---
