@@ -1,4 +1,3 @@
-
 --INICIO DAS ATIVIDADES :
 USE EscolaDB;
 
@@ -124,6 +123,14 @@ WHERE id_curso IN (
 
 
 -- 10. Liste os alunos matriculados no curso com maior carga horária.
+SELECT Alunos.nome as Nome
+FROM Alunos
+JOIN Matriculas ON Matriculas.id_aluno = Alunos.id_aluno
+JOIN Cursos ON Cursos.id_curso = Matriculas.id_curso
+WHERE Cursos.carga_horaria = (
+    SELECT MAX(carga_horaria) FROM Cursos
+);
+
 
 -- # Questões Avançadas — Subquery com operadores de comparação
 
@@ -137,6 +144,8 @@ WHERE idade > (
 );
 
 -- 2. Liste os cursos cuja média de notas seja maior que a média geral das notas.
+
+
 -- 3. Mostre os alunos cuja soma de faltas seja maior que a média total de faltas.
 -- 4. Exiba os cursos cuja maior nota registrada seja igual à maior nota do sistema.
 -- 5. Liste os alunos cuja média de notas seja menor que a média geral dos alunos.
